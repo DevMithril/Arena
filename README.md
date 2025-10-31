@@ -2,6 +2,8 @@
 
 Une library implémentant des arenas.
 Une arena est un bloc mémoire alloué en une fois, on redistribue ensuite la mémoire de cette arena via un allocateur spécifique.
+Une arena peut être libérée d'un seul coup (comme pour l'allocation initiale) sans devoir nécessairement suivre tous les blocs alloués.
+De plus, utiliser une arena réduit le nombre d'appels système (syscall).
 
 Cette library implémente les arenas suivantes :
 
