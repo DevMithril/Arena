@@ -92,12 +92,21 @@ void *malloc_ram(Arena *arena, size_t size)
 
 void free_ram(Arena *arena, void *ptr)
 {
-    if (((size_t)ptr) < origin(arena) + _METADATA_SIZE)
+    if (((size_t)ptr) < origin(arena) + _METADATA_SIZE || ((size_t)ptr) >= origin(arena) + arena->_capacity)
     {
         return; // pointer invalide
     }
     unsigned char *chunk_is_free = (unsigned char*)(ptr) - _METADATA_SIZE;
     *chunk_is_free = 1;
+}
+
+size_t memlen_ram(Arena *arena, void *ptr)
+{
+    if (((size_t)ptr) < origin(arena) + _METADATA_SIZE || ((size_t)ptr) >= origin(arena) + arena->_capacity)
+    {
+        return 0; // pointer invalide
+    }
+    return *((size_t*)((size_t)(ptr) - sizeof(size_t)));
 }
 
 Arena *create_ram_arena(size_t capacity)

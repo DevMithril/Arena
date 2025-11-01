@@ -27,6 +27,14 @@ void *malloc_ram(Arena *arena, size_t size);
 void free_ram(Arena *arena, void *ptr);
 
 /**
+ * Récupère la taille d'un bloc mémoire alloué
+ * \param arena arena où se situe le bloc mémoire
+ * \param ptr adresse mémoire du bloc
+ * \return Taille du bloc mémoire
+ */
+size_t memlen_ram(Arena *arena, void *ptr);
+
+/**
  * Alloue une Arena
  * \param capacity capacité de stockage de l'arena (en octets)
  * \note Renvoie NULL en cas d'échec
