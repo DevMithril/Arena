@@ -38,5 +38,5 @@ Affiche une comparaison de temps d'execution pour les différentes fonctions des
 #### Projets d'améliorations :
 
  - Améliorer les performances de `malloc_ram()`
- - Ajouter les fonctions `realloc_ram()`, `calloc_ram()`, `calloc_lifo()` et `memlen_ram()`
+ - Ajouter la fonction `realloc_ram()`
  - Ajouter une nouvelle arena avec un allocateur FSC (Fixed-Size-Chunks : comme RAM mais avec des blocs d'une taille spécifique à l'arena)

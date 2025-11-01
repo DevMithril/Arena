@@ -21,6 +21,14 @@ typedef struct Arena_LIFO
 void *malloc_lifo(Arena_LIFO *arena, size_t size);
 
 /**
+ * Alloue `size` octets initialisés à 0 dans `arena`
+ * \param arena arena où le bloc mémoire sera alloué
+ * \param size nombre d'octets à allouer
+ * \note Renvoie NULL en cas d'échec
+ */
+void *calloc_lifo(Arena_LIFO *arena, size_t size);
+
+/**
  * Libère un bloc mémoire précédemment alloué dans `arena`
  * \param arena arena contenant le bloc mémoire
  * \param ptr adresse mémoire du bloc

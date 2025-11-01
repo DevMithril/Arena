@@ -90,6 +90,21 @@ void *malloc_ram(Arena *arena, size_t size)
     return (unsigned char*)(chunk) + _METADATA_SIZE;
 }
 
+void *calloc_ram(Arena *arena, size_t size)
+{
+    void *ptr = malloc_ram(arena, size);
+    size_t i;
+    for (i = 0; i + sizeof(size_t) < size; i += sizeof(size_t))
+    {
+        *((size_t*)(ptr) + i) = 0;
+    }
+    for (; i < size; i++)
+    {
+        *((unsigned char*)(ptr) + i) = 0;
+    }
+    return ptr;
+}
+
 void free_ram(Arena *arena, void *ptr)
 {
     if (((size_t)ptr) < origin(arena) + _METADATA_SIZE || ((size_t)ptr) >= origin(arena) + arena->_capacity)

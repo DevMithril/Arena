@@ -15,6 +15,28 @@ void *malloc_lifo(Arena_LIFO *arena, size_t size)
     return ptr;
 }
 
+void *calloc_lifo(Arena_LIFO *arena, size_t size)
+{
+    void *ptr = (void*)(arena->_alloc_ptr + origin(arena));
+    if (arena->_alloc_ptr + size > arena->_capacity)
+    {
+        return NULL;
+    }
+
+    size_t i;
+    for (i = 0; i + sizeof(size_t) < size; i += sizeof(size_t))
+    {
+        *((size_t*)(ptr) + i) = 0;
+    }
+    for (; i < size; i++)
+    {
+        *((unsigned char*)(ptr) + i) = 0;
+    }
+    
+    arena->_alloc_ptr += size;
+    return ptr;
+}
+
 void free_lifo(Arena_LIFO *arena, void *ptr)
 {
     if (((size_t)ptr) < origin(arena))
