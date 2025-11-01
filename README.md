@@ -34,6 +34,7 @@ Un makefile est fourni avec cette library, n'hésitez pas à l'utiliser pour bui
 Affiche une comparaison de temps d'execution pour les différentes fonctions des allocateurs :
  - `malloc_lifo()`, `malloc_ram()`, `malloc()`
  - `free_lifo()`, `free_ram()`, `free()`
+ - `calloc_lifo()`, `calloc_ram()`, `calloc()`
 
 #### Projets d'améliorations :
 
