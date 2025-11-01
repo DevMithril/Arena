@@ -39,10 +39,6 @@ void *calloc_lifo(Arena_LIFO *arena, size_t size)
 
 void free_lifo(Arena_LIFO *arena, void *ptr)
 {
-    if (((size_t)ptr) < origin(arena))
-    {
-        return; // pointer invalide
-    }
     size_t new_alloc_ptr = ((size_t)ptr) - origin(arena);
     if (new_alloc_ptr <= arena->_alloc_ptr)
     {
