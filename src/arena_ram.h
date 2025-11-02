@@ -8,6 +8,7 @@
 typedef struct Arena
 {
     size_t _capacity;
+    size_t _free_chunks;
     unsigned char _data[];
 }Arena;
 

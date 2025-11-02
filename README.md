@@ -9,11 +9,11 @@ Cette library implémente les arenas suivantes :
 
  - arena RAM :
      - utilise un allocateur RAM (heap / tas)
-     - allocations moins rapides que celles du malloc() standard
+     - allocations plus rapides que celles du malloc() standard (pas de syscall)
 
  - arena LIFO :
      - utilise un allocateur LIFO (stack / pile)
-     - allocations beaucoup plus rapides que celles du malloc() standard (ce qui est normal)
+     - allocations beaucoup plus rapides que celles du malloc() standard (ce qui est normal pour ce type d'allocateur)
      - à utiliser soit dans des cas spécifiques, soit lorsque l'on ne libère pas la mémoire que l'on alloue,
      en effet, la nature de l'allocateur implique que la libération d'un bloc mémoire libère par la même
      occasion tous les blocs alloués après lui
@@ -38,6 +38,5 @@ Affiche une comparaison de temps d'execution pour les différentes fonctions des
 
 #### Projets d'améliorations :
 
- - Améliorer les performances de `malloc_ram()`
  - Ajouter la fonction `realloc_ram()`
  - Ajouter une nouvelle arena avec un allocateur FSC (Fixed-Size-Chunks : comme RAM mais avec des blocs d'une taille spécifique à l'arena)

@@ -6,74 +6,69 @@
 #define origin(arena) ((size_t)(arena) + sizeof(Arena))
 
 /**
+ * (size_t) capacité de stockage du chunk, `chunk` est un (size_t)
+ */
+#define chunk_capacity(chunk) (*((size_t*)chunk))
+
+/**
+ * (size_t) adresse du chunk libre suivant, `chunk` est un (size_t)
+ */
+#define chunk_next_free(chunk) (*((size_t*)chunk + 1))
+
+/**
  * Taille des metadata d'un chunk (en octets)
  */
-#define _METADATA_SIZE (sizeof(unsigned char) + sizeof(size_t))
+#define _METADATA_SIZE (2 * sizeof(size_t))
 
 /**
  * Combine un chunk avec le chunk suivant si celui-ci est libre
- * \param end_arena l'adresse de la fin de l'arena
  * \param chunk l'adresse du chunk
- * \return 1 si une combinaison a été effectuée, 0 sinon
  */
-int try_combine_chunks(size_t end_arena, size_t chunk)
+void combine_free_chunks(size_t chunk)
 {
-    size_t *chunk_capacity = (size_t*)(chunk + 1);
-    size_t next = chunk + _METADATA_SIZE + (*chunk_capacity);
+    size_t next = chunk + _METADATA_SIZE + chunk_capacity(chunk);
 
-    if (next + _METADATA_SIZE > end_arena || !(*((unsigned char*)next)))
-    {
-        return 0;
-    }
+    if (next != chunk_next_free(chunk) || chunk_next_free(chunk) == 0) return;
     
-    *chunk_capacity += _METADATA_SIZE + (*((size_t*)(next + 1)));
-    return 1;
-}
-
-/**
- * Recherche dans `arena` un chunk libre d'au moins `size` octets
- * \param arena arena où la recherche est effectuée
- * \param size capacité voulue pour le chunk (en octets)
- * \return Adresse du chunk libre, ou NULL si aucun n'est trouvé
- */
-void *get_free_chunk(Arena *arena, size_t size)
-{
-    size_t chunk = origin(arena);
-    size_t end_arena = chunk + arena->_capacity;
-    size_t *chunk_capacity = (size_t*)(chunk + 1);
-
-    while (chunk + _METADATA_SIZE < end_arena)
-    {
-        if (*((unsigned char*)chunk) && 
-            ((*chunk_capacity) == size || (*chunk_capacity) >= size + _METADATA_SIZE))
-        {
-            return (void*)chunk;
-        }
-        chunk += _METADATA_SIZE + (*chunk_capacity);
-        chunk_capacity = (size_t*)(chunk + 1);
-    }
-    return NULL;
+    chunk_next_free(chunk) = chunk_next_free(next);
+    chunk_capacity(chunk) += _METADATA_SIZE + chunk_capacity(next);
 }
 
 void *malloc_ram(Arena *arena, size_t size)
 {
-    unsigned char *chunk = get_free_chunk(arena, size);
+    size_t chunk = arena->_free_chunks;
+    size_t prev = chunk;
+
+    while (chunk && chunk_capacity(chunk) != size && chunk_capacity(chunk) < size + _METADATA_SIZE)
+    {
+        prev = chunk;
+        chunk = chunk_next_free(chunk);
+    }
+    
     if (!chunk) return NULL;
 
-    size_t *chunk_capacity = (size_t*)(chunk + 1);
-    
-    *chunk = 0;
-    if (*chunk_capacity != size)
+    if (chunk_capacity(chunk) == size)
     {
-        unsigned char *new = chunk + size + _METADATA_SIZE;
-        size_t *new_capacity = (size_t*)(new + 1);
-
-        *new = 1;
-        *new_capacity = (*chunk_capacity) - (size + _METADATA_SIZE);
-        *chunk_capacity = size;
+        if (prev == chunk)
+            {arena->_free_chunks = chunk_next_free(chunk);}
+        else
+            {chunk_next_free(prev) = chunk_next_free(chunk);}
+        return (void*)(chunk + _METADATA_SIZE);
     }
 
-    return chunk + _METADATA_SIZE;
+    size_t next = chunk + _METADATA_SIZE + size;
+
+    chunk_next_free(next) = chunk_next_free(chunk);
+    
+    if (prev == chunk)
+        {arena->_free_chunks = next;}
+    else
+        {chunk_next_free(prev) = next;}
+    
+    chunk_capacity(next) = chunk_capacity(chunk) - (_METADATA_SIZE + size);
+    chunk_capacity(chunk) = size;
+
+    return (void*)(chunk + _METADATA_SIZE);
 }
 
 void *calloc_ram(Arena *arena, size_t size)
@@ -102,16 +97,36 @@ void free_ram(Arena *arena, void *ptr)
     if (!ptr) return;
     
     size_t chunk = (size_t)ptr - _METADATA_SIZE;
-    *((unsigned char*)chunk) = 1;
+    size_t prev = arena->_free_chunks;
+    if (prev == 0)
+    {
+        arena->_free_chunks = chunk;
+        chunk_next_free(chunk) = 0;
+        return;
+    }
+    if (prev > chunk)
+    {
+        arena->_free_chunks = chunk;
+        chunk_next_free(chunk) = prev;
+        combine_free_chunks(chunk);
+        return;
+    }
     
-    size_t end_arena = origin(arena) + arena->_capacity;
-    while (try_combine_chunks(end_arena, chunk));
+    while (chunk > chunk_next_free(prev))
+    {
+        prev = chunk_next_free(prev);
+    }
+    chunk_next_free(chunk) = chunk_next_free(prev);
+    chunk_next_free(prev) = chunk;
+
+    combine_free_chunks(chunk);
+    combine_free_chunks(prev);
 }
 
 size_t memlen_ram(Arena *arena, void *ptr)
 {
     if (!ptr || !arena) return 0;
-    return *((size_t*)ptr - 1);
+    return *((size_t*)ptr - 2);
 }
 
 Arena *create_ram_arena(size_t capacity)
@@ -121,12 +136,12 @@ Arena *create_ram_arena(size_t capacity)
     Arena *arena = malloc(capacity + sizeof(Arena));
     if (!arena) return NULL;
     
-    unsigned char *chunk_is_free = (unsigned char*)origin(arena);
-    size_t *chunk_capacity = (size_t*)(chunk_is_free + 1);
-    
+    size_t chunk = origin(arena);
+
     arena->_capacity = capacity;
-    *chunk_is_free = 1;
-    *chunk_capacity = capacity - _METADATA_SIZE;
+    arena->_free_chunks = chunk;
+    chunk_capacity(chunk) = capacity - _METADATA_SIZE;
+    chunk_next_free(chunk) = 0;
     
     return arena;
 }
