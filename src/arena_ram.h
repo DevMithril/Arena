@@ -21,6 +21,15 @@ typedef struct Arena
 void *malloc_ram(Arena *arena, size_t size);
 
 /**
+ * Re-alloue un bloc précédemment alloué dans `arena`
+ * \param arena arena contenant le bloc mémoire
+ * \param ptr adresse mémoire du bloc
+ * \param size taille du nouveau bloc
+ * \note Renvoie NULL en cas d'échec
+ */
+void *realloc_ram(Arena *arena, void *ptr, size_t size);
+
+/**
  * Alloue `size` octets initialisés à 0 dans `arena`
  * \param arena arena où le bloc mémoire sera alloué
  * \param size nombre d'octets à allouer
@@ -42,6 +51,24 @@ void free_ram(Arena *arena, void *ptr);
  * \return Taille du bloc mémoire
  */
 size_t memlen_ram(Arena *arena, void *ptr);
+
+/**
+ * Copie `size` octets de `src` sur `dst`
+ * \param dst adresse mémoire du bloc où seront écrites les données
+ * \param src adresse mémoire du bloc où sont lues les données
+ * \param size nombre d'octets à copier
+ * \return Adresse mémoire `dst`
+ */
+void *memcpy_ram(void *dst, void *src, size_t size);
+
+/**
+ * Écrit `value` sur `size` octets de `ptr`
+ * \param ptr adresse mémoire du bloc où seront écrites les données
+ * \param value octet à écrire
+ * \param size nombre d'octets à écrire
+ * \return Adresse mémoire `ptr`
+ */
+void *memset_ram(void *ptr, unsigned char value, size_t size);
 
 /**
  * Alloue une Arena

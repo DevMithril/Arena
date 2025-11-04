@@ -71,25 +71,71 @@ void *malloc_ram(Arena *arena, size_t size)
     return (void*)(chunk + _METADATA_SIZE);
 }
 
+void *realloc_ram(Arena *arena, void *ptr, size_t size)
+{
+    if (!ptr) return malloc_ram(arena, size);
+    size_t prev = arena->_free_chunks;
+    size_t chunk = (size_t)ptr - _METADATA_SIZE;
+    size_t next = chunk + _METADATA_SIZE + chunk_capacity(chunk);
+
+    while (prev && chunk_next_free(prev) && chunk > chunk_next_free(prev))
+    {
+        prev = chunk_next_free(prev);
+    }
+    
+    // on phagocyte le chunk suivant si il est libre
+    if (next == prev)
+    {
+        arena->_free_chunks = chunk_next_free(next);
+        prev = chunk_next_free(next);
+        chunk_capacity(chunk) += _METADATA_SIZE + chunk_capacity(next);
+    }
+    else if (prev && next == chunk_next_free(prev))
+    {
+        chunk_next_free(prev) = chunk_next_free(next);
+        chunk_capacity(chunk) += _METADATA_SIZE + chunk_capacity(next);
+    }
+    
+    // le chunk est de la taille demandée
+    if (chunk_capacity(chunk) == size)
+    {
+        return ptr;
+    }
+    
+    // le chunk est plus grand que la taille demandée
+    if (chunk_capacity(chunk) > size + _METADATA_SIZE)
+    {
+        size_t new_free = chunk + _METADATA_SIZE + size;
+        chunk_capacity(new_free) = chunk_capacity(chunk) - (_METADATA_SIZE + size);
+        if (!prev || prev > chunk)
+        {
+            chunk_next_free(new_free) = prev;
+            arena->_free_chunks = new_free;
+        }
+        else
+        {
+            chunk_next_free(new_free) = chunk_next_free(prev);
+            chunk_next_free(prev) = new_free;
+        }
+        chunk_capacity(chunk) = size;
+        return ptr;
+    }
+
+    // pire scenario : le chunk ne peut pas être redimensionné
+    void *new_ptr = malloc_ram(arena, size);
+    if (new_ptr)
+    {
+        memcpy_ram(new_ptr, ptr, chunk_capacity(chunk));
+    }
+    free_ram(arena, ptr);
+    return new_ptr;
+}
+
 void *calloc_ram(Arena *arena, size_t size)
 {
     void *ptr = malloc_ram(arena, size);
     if (!ptr) return NULL;
-
-    size_t* l;
-    unsigned char* c;
-    size_t nl = size / sizeof(size_t);
-    size_t nc = size % sizeof(size_t);
-    for (l = ptr; nl; nl--, l++)
-    {
-        if (*l) *l = 0;
-    }
-    for (c = (unsigned char*)l; nc; nc--, c++)
-    {
-        if (*c) *c = 0;
-    }
-
-    return ptr;
+    return memset_ram(ptr, 0, size);
 }
 
 void free_ram(Arena *arena, void *ptr)
@@ -98,13 +144,7 @@ void free_ram(Arena *arena, void *ptr)
     
     size_t chunk = (size_t)ptr - _METADATA_SIZE;
     size_t prev = arena->_free_chunks;
-    if (prev == 0)
-    {
-        arena->_free_chunks = chunk;
-        chunk_next_free(chunk) = 0;
-        return;
-    }
-    if (prev > chunk)
+    if (!prev || prev > chunk)
     {
         arena->_free_chunks = chunk;
         chunk_next_free(chunk) = prev;
@@ -112,7 +152,7 @@ void free_ram(Arena *arena, void *ptr)
         return;
     }
     
-    while (chunk > chunk_next_free(prev))
+    while (chunk_next_free(prev) && chunk > chunk_next_free(prev))
     {
         prev = chunk_next_free(prev);
     }
@@ -127,6 +167,48 @@ size_t memlen_ram(Arena *arena, void *ptr)
 {
     if (!ptr || !arena) return 0;
     return *((size_t*)ptr - 2);
+}
+
+void *memcpy_ram(void *dst, void *src, size_t size)
+{
+    size_t* lsrc;
+    size_t* ldst;
+    unsigned char* csrc;
+    unsigned char* cdst;
+    size_t nl = size / sizeof(size_t);
+    size_t nc = size % sizeof(size_t);
+
+    for (lsrc = src, ldst = dst; nl; nl--, lsrc++, ldst++)
+    {
+        *ldst = *lsrc;
+    }
+    for (csrc = (unsigned char*)lsrc, cdst = (unsigned char*)ldst; nc; nc--, csrc++, cdst++)
+    {
+        *cdst = *csrc;
+    }
+    return dst;
+}
+
+void *memset_ram(void *ptr, unsigned char value, size_t size)
+{
+    size_t* l;
+    unsigned char* c;
+    size_t nl = size / sizeof(size_t);
+    size_t nc = size % sizeof(size_t);
+    size_t lvalue = value;
+    lvalue |= lvalue << 8;
+    lvalue |= lvalue << 16;
+    lvalue |= lvalue << 32;
+
+    for (l = ptr; nl; nl--, l++)
+    {
+        if (*l) *l = lvalue;
+    }
+    for (c = (unsigned char*)l; nc; nc--, c++)
+    {
+        if (*c) *c = value;
+    }
+    return ptr;
 }
 
 Arena *create_ram_arena(size_t capacity)
