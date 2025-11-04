@@ -38,5 +38,4 @@ Affiche une comparaison de temps d'execution pour les différentes fonctions des
 
 #### Projets d'améliorations :
 
- - Ajouter la fonction `realloc_ram()`
  - Ajouter une nouvelle arena avec un allocateur FSC (Fixed-Size-Chunks : comme RAM mais avec des blocs d'une taille spécifique à l'arena)
