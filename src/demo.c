@@ -2,8 +2,8 @@
 #include <time.h>
 #include "arena.h"
 
-#define ARENA_SIZE 4096
-#define DATA_COUNT 300
+#define ARENA_SIZE 4096 *30
+#define DATA_COUNT 300 *30
 
 #define test(...)                                   \
     start = clock();                                \

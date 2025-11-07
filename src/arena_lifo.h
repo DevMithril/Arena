@@ -7,7 +7,7 @@
  */
 typedef struct Arena_LIFO
 {
-    size_t _capacity;
+    size_t _end_of_arena;
     size_t _alloc_ptr;
     unsigned char _data[];
 }Arena_LIFO;
