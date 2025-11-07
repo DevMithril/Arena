@@ -1,7 +1,10 @@
 #include "arena_fsc.h"
 
 /**
- * TODO : Doc
+ * Écrit 0 sur `size` octets de `ptr`
+ * \param ptr adresse mémoire du bloc
+ * \param size nombre d'octets à écrire
+ * \return Adresse mémoire `ptr`
  */
 void *_memset0_fsc(void *ptr, size_t size)
 {
