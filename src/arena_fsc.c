@@ -8,16 +8,18 @@
  */
 void *_memset0_fsc(void *ptr, size_t size)
 {
-    size_t* l;
-    unsigned char* c;
-    size_t nl = size / sizeof(size_t);
+    size_t* l = ptr;
     size_t nc = size % sizeof(size_t);
 
-    for (l = ptr; nl; nl--, l++)
+    if (size >= sizeof(size_t))
     {
-        if (*l) *l = 0;
+        size_t nl = size / sizeof(size_t);
+        for (; nl; nl--, l++)
+        {
+            if (*l) *l = 0;
+        }
     }
-    for (c = (unsigned char*)l; nc; nc--, c++)
+    for (unsigned char *c = (unsigned char*)l; nc; nc--, c++)
     {
         if (*c) *c = 0;
     }

@@ -41,7 +41,3 @@ Affiche une comparaison de temps d'execution pour les différentes fonctions des
  - `malloc_lifo()`, `malloc_fsc()`, `malloc_ram()`, `malloc()`
  - `free_lifo()`, `free_fsc()`, `free_ram()`, `free()`
  - `calloc_lifo()`, `calloc_fsc()`, `calloc_ram()`, `calloc()`
-
-#### Projets d'améliorations :
-
- - Améliorer les performances de l'allocateur LIFO

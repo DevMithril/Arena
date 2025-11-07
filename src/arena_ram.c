@@ -191,23 +191,27 @@ void *memcpy_ram(void *dst, void *src, size_t size)
 
 void *memset_ram(void *ptr, unsigned char value, size_t size)
 {
-    size_t* l;
-    unsigned char* c;
-    size_t nl = size / sizeof(size_t);
+    size_t* l = ptr;
     size_t nc = size % sizeof(size_t);
-    size_t lvalue = value;
-    lvalue |= lvalue << 8;
-    lvalue |= lvalue << 16;
-    lvalue |= lvalue << 32;
 
-    for (l = ptr; nl; nl--, l++)
+    if (size >= sizeof(size_t))
     {
-        *l = lvalue;
+        size_t nl = size / sizeof(size_t);
+        size_t lvalue = value;
+        lvalue |= lvalue << 8;
+        lvalue |= lvalue << 16;
+        lvalue |= lvalue << 32;
+        
+        for (; nl; nl--, l++)
+        {
+            *l = lvalue;
+        }
     }
-    for (c = (unsigned char*)l; nc; nc--, c++)
+    for (unsigned char *c = (unsigned char*)l; nc; nc--, c++)
     {
         *c = value;
     }
+
     return ptr;
 }
 
