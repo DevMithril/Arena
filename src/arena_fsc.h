@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 /**
- * Une arena avec un allocateur FSC (Fixed-Sized Chunks)
+ * Une arena avec un allocateur FSC (Fixed-Size Chunks)
  */
 typedef struct Arena_FSC
 {
