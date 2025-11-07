@@ -18,6 +18,12 @@ Cette library implémente les arenas suivantes :
      en effet, la nature de l'allocateur implique que la libération d'un bloc mémoire libère par la même
      occasion tous les blocs alloués après lui
 
+ - arena FSC :
+     - utilise un allocateur RAM avec une contrainte sur les dimensions des allocations
+     - allocations un peu plus lentes qu'avec l'allocateur LIFO
+     - avec cet allocateur, les blocs mémoire sont d'une taille spécifique unique chaque arena,
+     vous ne pouvez donc allouer que des blocs de la même taille dans une arena donnée
+
 #### Installation / Utilisation :
 
 Chaque arena comprends une entête `arena_xxx.h` et une implémentation `arena_xxx.c` situés dans `src/`.
@@ -32,10 +38,10 @@ Un makefile est fourni avec cette library, n'hésitez pas à l'utiliser pour bui
 
     $ make run
 Affiche une comparaison de temps d'execution pour les différentes fonctions des allocateurs :
- - `malloc_lifo()`, `malloc_ram()`, `malloc()`
- - `free_lifo()`, `free_ram()`, `free()`
- - `calloc_lifo()`, `calloc_ram()`, `calloc()`
+ - `malloc_lifo()`, `malloc_fsc()`, `malloc_ram()`, `malloc()`
+ - `free_lifo()`, `free_fsc()`, `free_ram()`, `free()`
+ - `calloc_lifo()`, `calloc_fsc()`, `calloc_ram()`, `calloc()`
 
 #### Projets d'améliorations :
 
- - Ajouter une nouvelle arena avec un allocateur FSC (Fixed-Size-Chunks : comme RAM mais avec des blocs d'une taille spécifique à l'arena)
+ - Améliorer les performances de l'allocateur LIFO

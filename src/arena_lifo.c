@@ -24,6 +24,7 @@ void *calloc_lifo(Arena_LIFO *arena, size_t size)
     unsigned char* c;
     size_t nl = size / sizeof(size_t);
     size_t nc = size % sizeof(size_t);
+    
     for (l = ptr; nl; nl--, l++)
     {
         if (*l) *l = 0;

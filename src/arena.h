@@ -3,5 +3,6 @@
 
 #include "arena_ram.h"
 #include "arena_lifo.h"
+#include "arena_fsc.h"
 
 #endif

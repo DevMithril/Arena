@@ -202,11 +202,11 @@ void *memset_ram(void *ptr, unsigned char value, size_t size)
 
     for (l = ptr; nl; nl--, l++)
     {
-        if (*l) *l = lvalue;
+        *l = lvalue;
     }
     for (c = (unsigned char*)l; nc; nc--, c++)
     {
-        if (*c) *c = value;
+        *c = value;
     }
     return ptr;
 }
