@@ -36,14 +36,6 @@ void *malloc_ram(Arena *arena, size_t size);
 void *realloc_ram(Arena *arena, void *ptr, size_t size);
 
 /**
- * Alloue `size` octets initialisés à 0 dans `arena`
- * \param arena arena où le bloc mémoire sera alloué
- * \param size nombre d'octets à allouer
- * \note Renvoie NULL en cas d'échec
- */
-void *calloc_ram(Arena *arena, size_t size);
-
-/**
  * Libère un bloc mémoire précédemment alloué dans `arena`
  * \param arena arena contenant le bloc mémoire
  * \param ptr adresse mémoire du bloc
@@ -66,15 +58,6 @@ size_t memlen_ram(Arena *arena, void *ptr);
  * \return Adresse mémoire `dst`
  */
 void *memcpy_ram(void *dst, void *src, size_t size);
-
-/**
- * Écrit `value` sur `size` octets de `ptr`
- * \param ptr adresse mémoire du bloc où seront écrites les données
- * \param value octet à écrire
- * \param size nombre d'octets à écrire
- * \return Adresse mémoire `ptr`
- */
-void *memset_ram(void *ptr, unsigned char value, size_t size);
 
 /**
  * Alloue une Arena
@@ -113,14 +96,6 @@ typedef struct Arena_LIFO
  * \note Renvoie NULL en cas d'échec
  */
 void *malloc_lifo(Arena_LIFO *arena, size_t size);
-
-/**
- * Alloue `size` octets initialisés à 0 dans `arena`
- * \param arena arena où le bloc mémoire sera alloué
- * \param size nombre d'octets à allouer
- * \note Renvoie NULL en cas d'échec
- */
-void *calloc_lifo(Arena_LIFO *arena, size_t size);
 
 /**
  * Libère un bloc mémoire précédemment alloué dans `arena`
@@ -165,13 +140,6 @@ typedef struct Arena_FSC
  * \note Renvoie NULL en cas d'échec
  */
 void *malloc_fsc(Arena_FSC *arena);
-
-/**
- * Alloue un bloc mémoire initialisé à 0 dans `arena`
- * \param arena arena où le bloc mémoire sera alloué
- * \note Renvoie NULL en cas d'échec
- */
-void *calloc_fsc(Arena_FSC *arena);
 
 /**
  * Libère un bloc mémoire précédemment alloué dans `arena`

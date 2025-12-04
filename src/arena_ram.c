@@ -131,13 +131,6 @@ void *realloc_ram(Arena *arena, void *ptr, size_t size)
     return new_ptr;
 }
 
-void *calloc_ram(Arena *arena, size_t size)
-{
-    void *ptr = malloc_ram(arena, size);
-    if (!ptr) return NULL;
-    return memset_ram(ptr, 0, size);
-}
-
 void free_ram(Arena *arena, void *ptr)
 {
     if (!ptr) return;
@@ -187,32 +180,6 @@ void *memcpy_ram(void *dst, void *src, size_t size)
         *cdst = *csrc;
     }
     return dst;
-}
-
-void *memset_ram(void *ptr, unsigned char value, size_t size)
-{
-    size_t* l = ptr;
-    size_t nc = size % sizeof(size_t);
-
-    if (size >= sizeof(size_t))
-    {
-        size_t nl = size / sizeof(size_t);
-        size_t lvalue = value;
-        lvalue |= lvalue << 8;
-        lvalue |= lvalue << 16;
-        lvalue |= lvalue << 32;
-        
-        for (; nl; nl--, l++)
-        {
-            *l = lvalue;
-        }
-    }
-    for (unsigned char *c = (unsigned char*)l; nc; nc--, c++)
-    {
-        *c = value;
-    }
-
-    return ptr;
 }
 
 Arena *create_ram_arena(size_t capacity)

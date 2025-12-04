@@ -50,23 +50,6 @@ int main(void)
     test(free(std_heap_ptr[i]));
     printf("free()\t\t%ld\n", exec_time);
 
-    test(stack_ptr[i] = calloc_lifo(stack, sizeof(int)));
-    printf("calloc_lifo()\t%ld\n", exec_time);
-
-    test(fsc_heap_ptr[i] = calloc_fsc(fsc_heap));
-    printf("calloc_fsc()\t%ld\n", exec_time);
-
-    test(heap_ptr[i] = calloc_ram(heap, sizeof(int)));
-    printf("calloc_ram()\t%ld\n", exec_time);
-    
-    test(std_heap_ptr[i] = calloc(1, sizeof(int)));
-    printf("calloc()\t%ld\n", exec_time);
-
-    test(free_lifo(stack, stack_ptr[DATA_COUNT - (i+1)]));
-    test(free_fsc(fsc_heap, fsc_heap_ptr[i]));
-    test(free_ram(heap, heap_ptr[i]));
-    test(free(std_heap_ptr[i]));
-
     destroy_lifo_arena(stack);
     destroy_ram_arena(heap);
     destroy_fsc_arena(fsc_heap);
