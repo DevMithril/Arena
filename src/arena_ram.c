@@ -1,7 +1,5 @@
 #include "../arena.h"
 
-#define byte unsigned char
-
 /**
  * (size_t) l'adresse du premier chunk de l'arena
  */
@@ -21,6 +19,8 @@
  * Taille des metadata d'un chunk (en octets)
  */
 #define _METADATA_SIZE (2 * sizeof(size_t))
+
+typedef unsigned char byte_t;
 
 /**
  * Combine un chunk avec le chunk suivant si celui-ci est libre
@@ -169,8 +169,8 @@ void *memcpy_ram(void *dst, void *src, size_t size)
 {
     size_t* lsrc;
     size_t* ldst;
-    byte* csrc;
-    byte* cdst;
+    byte_t* csrc;
+    byte_t* cdst;
     size_t nl = size / sizeof(size_t);
     size_t nc = size % sizeof(size_t);
 
@@ -178,18 +178,18 @@ void *memcpy_ram(void *dst, void *src, size_t size)
     {
         *ldst = *lsrc;
     }
-    for (csrc = (byte*)lsrc, cdst = (byte*)ldst; nc; nc--, csrc++, cdst++)
+    for (csrc = (byte_t*)lsrc, cdst = (byte_t*)ldst; nc; nc--, csrc++, cdst++)
     {
         *cdst = *csrc;
     }
     return dst;
 }
 
-Arena *create_ram_arena(size_t capacity)
+Arena *create_ram_arena(size_t capacity, void *allocator(size_t))
 {
     if (capacity < _METADATA_SIZE) return NULL;
 
-    Arena *arena = malloc(capacity + sizeof(Arena));
+    Arena *arena = allocator(capacity + sizeof(Arena));
     if (!arena) return NULL;
     
     size_t chunk = origin(arena);
@@ -200,9 +200,4 @@ Arena *create_ram_arena(size_t capacity)
     chunk_nfree(chunk) = 0;
     
     return arena;
-}
-
-void destroy_ram_arena(Arena *arena)
-{
-    free(arena);
 }

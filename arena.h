@@ -1,6 +1,6 @@
 #ifndef _ARENA_LIB_H
 #define _ARENA_LIB_H
-#include <stdlib.h>
+#include <stddef.h>
 
 /*
 ================================================================================
@@ -62,16 +62,12 @@ void *memcpy_ram(void *dst, void *src, size_t size);
 /**
  * Alloue une Arena
  * \param capacity capacité de stockage de l'arena (en octets)
+ * \param allocator allocateur utilisé pour allouer l'arena
  * \note Renvoie NULL en cas d'échec
  * \note `capacity` correspond au stockage reservé pour la data de l'arena
  *                  (i.e. : vos allocations + les metadata associées)
  */
-Arena *create_ram_arena(size_t capacity);
-
-/**
- * Libère la mémoire d'une Arena
- */
-void destroy_ram_arena(Arena *arena);
+Arena *create_ram_arena(size_t capacity, void *allocator(size_t));
 
 /*
 ================================================================================
@@ -108,14 +104,10 @@ void free_lifo(Arena_LIFO *arena, void *ptr);
 /**
  * Alloue une Arena_LIFO
  * \param capacity capacité de stockage de l'arena (en octets)
+ * \param allocator allocateur utilisé pour allouer l'arena
  * \note Renvoie NULL en cas d'échec
  */
-Arena_LIFO *create_lifo_arena(size_t capacity);
-
-/**
- * Libère la mémoire d'une Arena_LIFO
- */
-void destroy_lifo_arena(Arena_LIFO *arena);
+Arena_LIFO *create_lifo_arena(size_t capacity, void *allocator(size_t));
 
 /*
 ================================================================================
@@ -153,13 +145,11 @@ void free_fsc(Arena_FSC *arena, void *ptr);
  * \param element_size taille d'un élément (en octets)
  * \param max_element_count nombre maximal d'éléments pouvant être
  *                          stockés dans l'arena
+ * \param allocator allocateur utilisé pour allouer l'arena
  * \note Renvoie NULL en cas d'échec
  */
-Arena_FSC *create_fsc_arena(size_t element_size, size_t max_element_count);
-
-/**
- * Libère la mémoire d'une Arena FSC
- */
-void destroy_fsc_arena(Arena_FSC *arena);
+Arena_FSC *create_fsc_arena(size_t element_size,
+                            size_t max_element_count,
+                            void *allocator(size_t));
 
 #endif

@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 #include "../arena.h"
 #define ARENA_SIZE 4096 *30
@@ -14,9 +15,9 @@
 
 int main(void)
 {
-    Arena_LIFO *stack = create_lifo_arena(ARENA_SIZE);
-    Arena *heap = create_ram_arena(ARENA_SIZE);
-    Arena_FSC *fsc_heap = create_fsc_arena(sizeof(int), DATA_COUNT);
+    Arena_LIFO *stack = create_lifo_arena(ARENA_SIZE, malloc);
+    Arena *heap = create_ram_arena(ARENA_SIZE, malloc);
+    Arena_FSC *fsc_heap = create_fsc_arena(sizeof(int), DATA_COUNT, malloc);
     int *stack_ptr[DATA_COUNT];
     int *heap_ptr[DATA_COUNT];
     int *fsc_heap_ptr[DATA_COUNT];
@@ -50,9 +51,9 @@ int main(void)
     test(free(std_heap_ptr[i]));
     printf("free()\t\t%ld\n", exec_time);
 
-    destroy_lifo_arena(stack);
-    destroy_ram_arena(heap);
-    destroy_fsc_arena(fsc_heap);
+    free(stack);
+    free(heap);
+    free(fsc_heap);
 
     return EXIT_SUCCESS;
 }
