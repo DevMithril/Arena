@@ -1,4 +1,4 @@
-#include "arena_fsc.h"
+#include "../arena.h"
 
 /**
  * Écrit 0 sur `size` octets de `ptr`

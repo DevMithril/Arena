@@ -1,4 +1,4 @@
-#include "arena_lifo.h"
+#include "../arena.h"
 
 void *malloc_lifo(Arena_LIFO *arena, size_t size)
 {

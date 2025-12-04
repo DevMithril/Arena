@@ -1,4 +1,4 @@
-#include "arena_ram.h"
+#include "../arena.h"
 
 /**
  * (size_t) l'adresse du premier chunk de l'arena
