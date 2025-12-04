@@ -151,7 +151,8 @@ void free_fsc(Arena_FSC *arena, void *ptr);
 /**
  * Alloue une Arena FSC
  * \param element_size taille d'un élément (en octets)
- * \param max_element_count nombre maximal d'éléments pouvant être stockés dans l'arena
+ * \param max_element_count nombre maximal d'éléments pouvant être
+ *                          stockés dans l'arena
  * \note Renvoie NULL en cas d'échec
  */
 Arena_FSC *create_fsc_arena(size_t element_size, size_t max_element_count);
