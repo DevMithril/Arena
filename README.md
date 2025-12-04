@@ -24,18 +24,23 @@ Cette library implémente les arenas suivantes :
      - avec cet allocateur, les blocs mémoire sont d'une taille spécifique unique chaque arena,
      vous ne pouvez donc allouer que des blocs de la même taille dans une arena donnée
 
-#### Installation / Utilisation :
+#### Compilation :
 
-Chaque arena comprends une entête `arena_xxx.h` et une implémentation `arena_xxx.c` situés dans `src/`.
+(Re)Compilez `libarena.so` avec :
 
-Vous pouvez copier dans votre projet : 
- - Une entête spécifique et son implémentation, puis inclure dans votre code `arena_xxx.h`
- - Toutes les entêtes / implémentations + `arena.h`, puis inclure dans votre code `arena.h`
+    $ make lib
 
-Un makefile est fourni avec cette library, n'hésitez pas à l'utiliser pour build vos projets.
+#### Utilisation :
+
+Copiez `arena.h` et `libarena.so` dans votre projet, `#include "arena.h"` dans votre code.
+
+Puis compilez avec les flags adéquats :
+
+    $ gcc -o your_project your_project.c -L./ -Wl,-rpath=./ -larena
 
 #### Demo :
 
+    $ cd demo
     $ make run
 Affiche une comparaison de temps d'execution pour les différentes fonctions des allocateurs :
  - `malloc_lifo()`, `malloc_fsc()`, `malloc_ram()`, `malloc()`

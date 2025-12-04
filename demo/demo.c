@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <time.h>
-#include "arena.h"
-
+#include "../arena.h"
 #define ARENA_SIZE 4096 *30
 #define DATA_COUNT 300 *30
 
