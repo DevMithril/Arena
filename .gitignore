@@ -1,4 +1,4 @@
 .vscode
-bin/*.o
-dep/*.d
-arena_test
+bin
+dep
+demo/demo_arena
