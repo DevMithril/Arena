@@ -1,5 +1,8 @@
 #include "types.h"
-#include "realloc_ram.h"
+
+void *malloc_ram(Arena *arena, size_t size);
+
+void free_ram(Arena *arena, void *ptr);
 
 /**
  * Copie `size` octets de `src` sur `dst`
