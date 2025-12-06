@@ -1,40 +1,39 @@
 #include "types.h"
-#include "arena_ram.h"
 
 /**
  * Combine un chunk avec le chunk suivant si celui-ci est libre
  * \param chunk l'adresse du chunk
  */
-void combine_free_chunks(size_t chunk)
+void combine_free_chunks(Chunk *chunk)
 {
-    size_t next = chunk + _METADATA_SIZE + chunk_cap(chunk);
+    Chunk *next = (Chunk*)((size_t)(chunk + 1) + chunk->capacity);
 
-    if (next != chunk_nfree(chunk) || chunk_nfree(chunk) == 0) return;
+    if (next != chunk->next_free || !chunk->next_free) return;
     
-    chunk_nfree(chunk) = chunk_nfree(next);
-    chunk_cap(chunk) += _METADATA_SIZE + chunk_cap(next);
+    chunk->next_free = next->next_free;
+    chunk->capacity += sizeof(Chunk) + next->capacity;
 }
 
 void free_ram(Arena *arena, void *ptr)
 {
     if (!ptr) return;
     
-    size_t chunk = (size_t)ptr - _METADATA_SIZE;
-    size_t prev = arena->free_chunks;
-    if (!prev || prev > chunk)
+    Chunk *chunk = (Chunk*)((size_t)ptr - sizeof(Chunk));
+    Chunk *prev = arena->free_chunks;
+    if (!prev || (size_t)prev > (size_t)chunk)
     {
         arena->free_chunks = chunk;
-        chunk_nfree(chunk) = prev;
+        chunk->next_free = prev;
         combine_free_chunks(chunk);
         return;
     }
     
-    while (chunk_nfree(prev) && chunk > chunk_nfree(prev))
+    while (prev->next_free && (size_t)chunk > (size_t)prev->next_free)
     {
-        prev = chunk_nfree(prev);
+        prev = prev->next_free;
     }
-    chunk_nfree(chunk) = chunk_nfree(prev);
-    chunk_nfree(prev) = chunk;
+    chunk->next_free = prev->next_free;
+    prev->next_free = chunk;
 
     combine_free_chunks(chunk);
     combine_free_chunks(prev);

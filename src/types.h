@@ -4,10 +4,21 @@
 
 typedef unsigned char byte_t;
 
+typedef struct Chunk
+{
+    size_t capacity;
+    union
+    {
+        struct Chunk *next_free;
+        size_t size;
+    };
+    byte_t data[];
+}Chunk;
+
 typedef struct Arena
 {
     size_t capacity;
-    size_t free_chunks;
+    Chunk *free_chunks;
     byte_t data[];
 }Arena;
 

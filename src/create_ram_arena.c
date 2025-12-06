@@ -1,19 +1,18 @@
 #include "types.h"
-#include "arena_ram.h"
 
 Arena *create_ram_arena(size_t capacity, void *alloc(size_t))
 {
-    if (capacity < _METADATA_SIZE) return NULL;
+    if (capacity < sizeof(Chunk)) return NULL;
 
     Arena *arena = alloc(capacity + sizeof(Arena));
     if (!arena) return NULL;
     
-    size_t chunk = origin(arena);
+    Chunk *chunk = (Chunk*)arena->data;
 
     arena->capacity = capacity;
     arena->free_chunks = chunk;
-    chunk_cap(chunk) = capacity - _METADATA_SIZE;
-    chunk_nfree(chunk) = 0;
+    chunk->capacity = capacity - sizeof(Chunk);
+    chunk->next_free = NULL;
     
     return arena;
 }

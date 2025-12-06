@@ -31,50 +31,52 @@ void *memcpy_ram(void *dst, void *src, size_t size)
 void *realloc_ram(Arena *arena, void *ptr, size_t size)
 {
     if (!ptr) return malloc_ram(arena, size);
-    size_t prev = arena->free_chunks;
-    size_t chunk = (size_t)ptr - _METADATA_SIZE;
-    size_t next = chunk + _METADATA_SIZE + chunk_cap(chunk);
+    Chunk *prev = arena->free_chunks;
+    Chunk *chunk = (Chunk*)ptr - 1;
+    Chunk *next = (Chunk*)((size_t)(chunk + 1) + chunk->capacity);
 
-    while (prev && chunk_nfree(prev) && chunk > chunk_nfree(prev))
+    while (prev && prev->next_free && (size_t)chunk > (size_t)prev->next_free)
     {
-        prev = chunk_nfree(prev);
+        prev = prev->next_free;
     }
     
     // on phagocyte le chunk suivant si il est libre
     if (next == prev)
     {
-        arena->free_chunks = chunk_nfree(next);
-        prev = chunk_nfree(next);
-        chunk_cap(chunk) += _METADATA_SIZE + chunk_cap(next);
+        arena->free_chunks = next->next_free;
+        prev = next->next_free;
+        chunk->capacity += sizeof(Chunk) + next->capacity;
     }
-    else if (prev && next == chunk_nfree(prev))
+    else if (prev && next == prev->next_free)
     {
-        chunk_nfree(prev) = chunk_nfree(next);
-        chunk_cap(chunk) += _METADATA_SIZE + chunk_cap(next);
+        prev->next_free = next->next_free;
+        chunk->capacity += sizeof(Chunk) + next->capacity;
     }
     
     // le chunk est de la taille demandée
-    if (chunk_cap(chunk) == size)
+    if (chunk->capacity == size)
     {
+        chunk->size = size;
         return ptr;
     }
     
     // le chunk est plus grand que la taille demandée
-    if (chunk_cap(chunk) > size + _METADATA_SIZE)
+    if (chunk->capacity > size + sizeof(Chunk))
     {
-        size_t new_free = chunk + _METADATA_SIZE + size;
-        chunk_cap(new_free) = chunk_cap(chunk) - (_METADATA_SIZE + size);
-        if (!prev || prev > chunk)
+        Chunk *new_free = (Chunk*)((size_t)(chunk + 1) + size);
+        new_free->capacity = chunk->capacity - (sizeof(Chunk) + size);
+        if (!prev || (size_t)prev > (size_t)chunk)
         {
-            chunk_nfree(new_free) = prev;
+            new_free->next_free = prev;
             arena->free_chunks = new_free;
         }
         else
         {
-            chunk_nfree(new_free) = chunk_nfree(prev);
-            chunk_nfree(prev) = new_free;
+            new_free->next_free = prev->next_free;
+            prev->next_free = new_free;
         }
-        chunk_cap(chunk) = size;
+        chunk->capacity = size;
+        chunk->size = size;
         return ptr;
     }
 
@@ -82,7 +84,7 @@ void *realloc_ram(Arena *arena, void *ptr, size_t size)
     void *new_ptr = malloc_ram(arena, size);
     if (new_ptr)
     {
-        memcpy_ram(new_ptr, ptr, chunk_cap(chunk));
+        memcpy_ram(new_ptr, ptr, chunk->capacity);
     }
     free_ram(arena, ptr);
     return new_ptr;
