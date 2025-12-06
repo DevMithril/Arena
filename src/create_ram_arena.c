@@ -1,11 +1,11 @@
 #include "../arena.h"
 #include "arena_ram.h"
 
-Arena *create_ram_arena(size_t capacity, void *allocator(size_t))
+Arena *create_ram_arena(size_t capacity, void *alloc(size_t))
 {
     if (capacity < _METADATA_SIZE) return NULL;
 
-    Arena *arena = allocator(capacity + sizeof(Arena));
+    Arena *arena = alloc(capacity + sizeof(Arena));
     if (!arena) return NULL;
     
     size_t chunk = origin(arena);

@@ -53,12 +53,12 @@ size_t memlen_ram(Arena *arena, void *ptr);
 /**
  * Alloue une Arena
  * \param capacity capacité de stockage de l'arena (en octets)
- * \param allocator allocateur utilisé pour allouer l'arena
+ * \param alloc allocateur utilisé pour allouer l'arena
  * \note Renvoie NULL en cas d'échec
  * \note `capacity` correspond au stockage reservé pour la data de l'arena
  *                  (i.e. : vos allocations + les metadata associées)
  */
-Arena *create_ram_arena(size_t capacity, void *allocator(size_t));
+Arena *create_ram_arena(size_t capacity, void *alloc(size_t));
 
 /*
 ================================================================================
@@ -95,10 +95,10 @@ void free_lifo(Arena_LIFO *arena, void *ptr);
 /**
  * Alloue une Arena_LIFO
  * \param capacity capacité de stockage de l'arena (en octets)
- * \param allocator allocateur utilisé pour allouer l'arena
+ * \param alloc allocateur utilisé pour allouer l'arena
  * \note Renvoie NULL en cas d'échec
  */
-Arena_LIFO *create_lifo_arena(size_t capacity, void *allocator(size_t));
+Arena_LIFO *create_lifo_arena(size_t capacity, void *alloc(size_t));
 
 /*
 ================================================================================
@@ -111,7 +111,7 @@ Arena_LIFO *create_lifo_arena(size_t capacity, void *allocator(size_t));
  */
 typedef struct Arena_FSC
 {
-    size_t _capacity;
+    size_t _end_of_arena;
     size_t _element_size;
     size_t _alloc_ptr;
     unsigned char _data[];
@@ -133,14 +133,11 @@ void free_fsc(Arena_FSC *arena, void *ptr);
 
 /**
  * Alloue une Arena FSC
- * \param element_size taille d'un élément (en octets)
- * \param max_element_count nombre maximal d'éléments pouvant être
- *                          stockés dans l'arena
- * \param allocator allocateur utilisé pour allouer l'arena
+ * \param size taille d'un élément (en octets)
+ * \param count nombre d'éléments pouvant être stockés dans l'arena
+ * \param alloc allocateur utilisé pour allouer l'arena
  * \note Renvoie NULL en cas d'échec
  */
-Arena_FSC *create_fsc_arena(size_t element_size,
-                            size_t max_element_count,
-                            void *allocator(size_t));
+Arena_FSC *create_fsc_arena(size_t size, size_t count, void *alloc(size_t));
 
 #endif

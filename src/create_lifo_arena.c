@@ -1,8 +1,8 @@
 #include "../arena.h"
 
-Arena_LIFO *create_lifo_arena(size_t capacity, void *allocator(size_t))
+Arena_LIFO *create_lifo_arena(size_t capacity, void *alloc(size_t))
 {
-    Arena_LIFO *arena = allocator(capacity + sizeof(Arena_LIFO));
+    Arena_LIFO *arena = alloc(capacity + sizeof(Arena_LIFO));
     
     if (arena)
     {
