@@ -1,5 +1,5 @@
 #include "types.h"
-#include "arena_ram.h"
+#include "realloc_ram.h"
 
 /**
  * Copie `size` octets de `src` sur `dst`
@@ -30,10 +30,13 @@ void *memcpy_ram(void *dst, void *src, size_t size)
 
 void *realloc_ram(Arena *arena, void *ptr, size_t size)
 {
-    if (!ptr) return malloc_ram(arena, size);
+    if (!ptr)
+    {
+        return malloc_ram(arena, size);
+    }
     Chunk *prev = arena->free_chunks;
     Chunk *chunk = (Chunk*)ptr - 1;
-    Chunk *next = (Chunk*)((size_t)(chunk + 1) + chunk->capacity);
+    Chunk *next = (Chunk*)(chunk->data + chunk->capacity);
 
     while (prev && prev->next_free && (size_t)chunk > (size_t)prev->next_free)
     {
@@ -53,17 +56,22 @@ void *realloc_ram(Arena *arena, void *ptr, size_t size)
         chunk->capacity += sizeof(Chunk) + next->capacity;
     }
     
-    // le chunk est de la taille demandée
-    if (chunk->capacity == size)
+    // pire scenario : le chunk ne peut pas être redimensionné
+    if (chunk->capacity < size)
     {
-        chunk->size = size;
-        return ptr;
+        void *new_ptr = malloc_ram(arena, size);
+        if (new_ptr)
+        {
+            memcpy_ram(new_ptr, ptr, chunk->capacity);
+        }
+        free_ram(arena, ptr);
+        return new_ptr;
     }
     
-    // le chunk est plus grand que la taille demandée
-    if (chunk->capacity > size + sizeof(Chunk))
+    // le chunk peut être découpé
+    if (chunk->capacity >= size + sizeof(Chunk))
     {
-        Chunk *new_free = (Chunk*)((size_t)(chunk + 1) + size);
+        Chunk *new_free = (Chunk*)(chunk->data + size);
         new_free->capacity = chunk->capacity - (sizeof(Chunk) + size);
         if (!prev || (size_t)prev > (size_t)chunk)
         {
@@ -76,16 +84,8 @@ void *realloc_ram(Arena *arena, void *ptr, size_t size)
             prev->next_free = new_free;
         }
         chunk->capacity = size;
-        chunk->size = size;
-        return ptr;
     }
 
-    // pire scenario : le chunk ne peut pas être redimensionné
-    void *new_ptr = malloc_ram(arena, size);
-    if (new_ptr)
-    {
-        memcpy_ram(new_ptr, ptr, chunk->capacity);
-    }
-    free_ram(arena, ptr);
-    return new_ptr;
+    chunk->size = size;
+    return ptr;
 }
