@@ -1,4 +1,5 @@
 #include "../arena.h"
+#include "types.h"
 #include "arena_ram.h"
 
 /**
@@ -20,10 +21,10 @@ void free_ram(Arena *arena, void *ptr)
     if (!ptr) return;
     
     size_t chunk = (size_t)ptr - _METADATA_SIZE;
-    size_t prev = arena->_free_chunks;
+    size_t prev = arena->free_chunks;
     if (!prev || prev > chunk)
     {
-        arena->_free_chunks = chunk;
+        arena->free_chunks = chunk;
         chunk_nfree(chunk) = prev;
         combine_free_chunks(chunk);
         return;

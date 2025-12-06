@@ -1,6 +1,6 @@
 #include "../arena.h"
 #include "arena_ram.h"
-#include "byte_t.h"
+#include "types.h"
 
 /**
  * Copie `size` octets de `src` sur `dst`
@@ -32,7 +32,7 @@ void *memcpy_ram(void *dst, void *src, size_t size)
 void *realloc_ram(Arena *arena, void *ptr, size_t size)
 {
     if (!ptr) return malloc_ram(arena, size);
-    size_t prev = arena->_free_chunks;
+    size_t prev = arena->free_chunks;
     size_t chunk = (size_t)ptr - _METADATA_SIZE;
     size_t next = chunk + _METADATA_SIZE + chunk_cap(chunk);
 
@@ -44,7 +44,7 @@ void *realloc_ram(Arena *arena, void *ptr, size_t size)
     // on phagocyte le chunk suivant si il est libre
     if (next == prev)
     {
-        arena->_free_chunks = chunk_nfree(next);
+        arena->free_chunks = chunk_nfree(next);
         prev = chunk_nfree(next);
         chunk_cap(chunk) += _METADATA_SIZE + chunk_cap(next);
     }
@@ -68,7 +68,7 @@ void *realloc_ram(Arena *arena, void *ptr, size_t size)
         if (!prev || prev > chunk)
         {
             chunk_nfree(new_free) = prev;
-            arena->_free_chunks = new_free;
+            arena->free_chunks = new_free;
         }
         else
         {

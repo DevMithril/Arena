@@ -1,9 +1,10 @@
 #include "../arena.h"
+#include "types.h"
 #include "arena_ram.h"
 
 void *malloc_ram(Arena *arena, size_t size)
 {
-    size_t chunk = arena->_free_chunks;
+    size_t chunk = arena->free_chunks;
     size_t prev = chunk;
 
     while (chunk && chunk_cap(chunk) != size &&
@@ -18,7 +19,7 @@ void *malloc_ram(Arena *arena, size_t size)
     if (chunk_cap(chunk) == size)
     {
         if (prev == chunk)
-            {arena->_free_chunks = chunk_nfree(chunk);}
+            {arena->free_chunks = chunk_nfree(chunk);}
         else
             {chunk_nfree(prev) = chunk_nfree(chunk);}
         return (void*)(chunk + _METADATA_SIZE);
@@ -29,7 +30,7 @@ void *malloc_ram(Arena *arena, size_t size)
     chunk_nfree(next) = chunk_nfree(chunk);
     
     if (prev == chunk)
-        {arena->_free_chunks = next;}
+        {arena->free_chunks = next;}
     else
         {chunk_nfree(prev) = next;}
     

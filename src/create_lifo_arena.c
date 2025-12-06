@@ -1,4 +1,5 @@
 #include "../arena.h"
+#include "types.h"
 
 Arena_LIFO *create_lifo_arena(size_t capacity, void *alloc(size_t))
 {
@@ -6,8 +7,8 @@ Arena_LIFO *create_lifo_arena(size_t capacity, void *alloc(size_t))
     
     if (arena)
     {
-        arena->_end_of_arena = (size_t)arena->_data + capacity;
-        arena->_alloc_ptr = (size_t)arena->_data;
+        arena->end_of_arena = (size_t)arena->data + capacity;
+        arena->alloc_ptr = (size_t)arena->data;
     }
     return arena;
 }

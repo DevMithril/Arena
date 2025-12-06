@@ -11,12 +11,7 @@
 /**
  * Une arena avec un allocateur RAM
  */
-typedef struct Arena
-{
-    size_t _capacity;
-    size_t _free_chunks;
-    unsigned char _data[];
-}Arena;
+typedef void Arena;
 
 /**
  * Alloue `size` octets dans `arena`
@@ -69,12 +64,7 @@ Arena *create_ram_arena(size_t capacity, void *alloc(size_t));
 /*
  * Une arena avec un allocateur LIFO
  */
-typedef struct Arena_LIFO
-{
-    size_t _end_of_arena;
-    size_t _alloc_ptr;
-    unsigned char _data[];
-}Arena_LIFO;
+typedef void Arena_LIFO;
 
 /**
  * Alloue `size` octets dans `arena`
@@ -109,13 +99,7 @@ Arena_LIFO *create_lifo_arena(size_t capacity, void *alloc(size_t));
 /**
  * Une arena avec un allocateur FSC (Fixed-Size Chunks)
  */
-typedef struct Arena_FSC
-{
-    size_t _end_of_arena;
-    size_t _element_size;
-    size_t _alloc_ptr;
-    unsigned char _data[];
-}Arena_FSC;
+typedef void Arena_FSC;
 
 /**
  * Alloue un bloc mémoire dans `arena`
