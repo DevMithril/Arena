@@ -1,4 +1,3 @@
-#include "../arena.h"
 #include "types.h"
 
 void *malloc_lifo(Arena_LIFO *arena, size_t size)

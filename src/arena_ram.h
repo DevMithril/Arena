@@ -1,6 +1,6 @@
 #ifndef _ARENA_RAM_H
 #define _ARENA_RAM_H
-#include "../arena.h"
+#include "types.h"
 
 /**
  * (size_t) l'adresse du premier chunk de l'arena
@@ -21,5 +21,9 @@
  * Taille des metadata d'un chunk (en octets)
  */
 #define _METADATA_SIZE (2 * sizeof(size_t))
+
+void *malloc_ram(Arena *arena, size_t size);
+
+void free_ram(Arena *arena, void *ptr);
 
 #endif

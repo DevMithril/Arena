@@ -1,4 +1,3 @@
-#include "../arena.h"
 #include "types.h"
 
 Arena_FSC *create_fsc_arena(size_t size, size_t count, void *alloc(size_t))

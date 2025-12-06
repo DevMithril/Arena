@@ -1,4 +1,3 @@
-#include "../arena.h"
 #include "types.h"
 #include "arena_ram.h"
 

@@ -1,4 +1,3 @@
-#include "../arena.h"
 #include "types.h"
 
 Arena_LIFO *create_lifo_arena(size_t capacity, void *alloc(size_t))

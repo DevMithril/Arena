@@ -1,4 +1,3 @@
-#include "../arena.h"
 #include "types.h"
 
 void free_lifo(Arena_LIFO *arena, void *ptr)

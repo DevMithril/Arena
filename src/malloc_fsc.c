@@ -1,4 +1,3 @@
-#include "../arena.h"
 #include "types.h"
 
 void *malloc_fsc(Arena_FSC *arena)

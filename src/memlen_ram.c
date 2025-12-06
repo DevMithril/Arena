@@ -1,4 +1,4 @@
-#include "../arena.h"
+#include "types.h"
 
 size_t memlen_ram(Arena *arena, void *ptr)
 {
