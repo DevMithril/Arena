@@ -21,7 +21,7 @@ Cette library implémente les arenas suivantes :
  - arena FSC (Fixed-Size Chunks) :
      - utilise un allocateur RAM avec une contrainte sur les dimensions des allocations
      - allocations un peu plus lentes qu'avec l'allocateur LIFO
-     - avec cet allocateur, les blocs mémoire sont d'une taille spécifique unique chaque arena,
+     - avec cet allocateur, les blocs mémoire sont d'une taille spécifique unique pour toute l'arena,
      vous ne pouvez donc allouer que des blocs de la même taille dans une arena donnée
 
 #### Compilation :
