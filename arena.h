@@ -51,15 +51,6 @@ void free_ram(Arena *arena, void *ptr);
 size_t memlen_ram(Arena *arena, void *ptr);
 
 /**
- * Copie `size` octets de `src` sur `dst`
- * \param dst adresse mémoire du bloc où seront écrites les données
- * \param src adresse mémoire du bloc où sont lues les données
- * \param size nombre d'octets à copier
- * \return Adresse mémoire `dst`
- */
-void *memcpy_ram(void *dst, void *src, size_t size);
-
-/**
  * Alloue une Arena
  * \param capacity capacité de stockage de l'arena (en octets)
  * \param allocator allocateur utilisé pour allouer l'arena
