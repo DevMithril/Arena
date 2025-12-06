@@ -9,6 +9,11 @@ Arena_FSC *create_fsc_arena(size_t size, size_t count, void *alloc(size_t))
         arena->end_of_arena = (size_t)arena->data + total_size;
         arena->element_size = size + 1;
         arena->alloc_ptr = (size_t)arena->data;
+        byte_t *meta = arena->data;
+        for (; (size_t)meta < arena->end_of_arena; meta += size + 1)
+        {
+            if (*meta) *meta = 0;
+        }
     }
     return arena;
 }
