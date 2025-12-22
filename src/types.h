@@ -17,7 +17,6 @@ typedef struct Chunk
 
 typedef struct Arena
 {
-    size_t capacity;
     Chunk *free_chunks;
     byte_t data[];
 }Arena;
