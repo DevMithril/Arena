@@ -7,8 +7,7 @@
 
 #define test(...)                                   \
     start = clock();                                \
-    for (int i = 0; i < DATA_COUNT; i++)            \
-    {                                               \
+    for (int i = 0; i < DATA_COUNT; i++) {          \
         __VA_ARGS__;                                \
     }                                               \
     exec_time = clock() - start
