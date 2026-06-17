@@ -35,28 +35,33 @@ void *memcpy_ram(void *dst, void *src, size_t size)
 
 void *realloc_ram(Arena *arena, void *ptr, size_t size)
 {
+    // Allocation standard
     if (!ptr) {
         return malloc_ram(arena, size);
     }
-    Chunk *prev = arena->free_chunks;
+
+    // Déclaration des variables
+    Chunk *near = arena->free_chunks;
     Chunk *chunk = (Chunk*)ptr - 1;
     Chunk *next = (Chunk*)(chunk->data + chunk->capacity);
+    Chunk *new_free;
 
-    while (prev && prev->next_free && (size_t)chunk > (size_t)prev->next_free) {
-        prev = prev->next_free;
+    // Obtention du Chunk libre précédent si possible, sinon le plus proche
+    while (near && near->next_free && (size_t)chunk > (size_t)near->next_free) {
+        near = near->next_free;
     }
     
-    // on phagocyte le chunk suivant si il est libre
-    if (next == prev) {
+    // Phagocytation du chunk suivant si il est libre
+    if (next == near) {
         arena->free_chunks = next->next_free;
-        prev = next->next_free;
+        near = next->next_free;
         chunk->capacity += sizeof(Chunk) + next->capacity;
-    } else if (prev && next == prev->next_free) {
-        prev->next_free = next->next_free;
+    } else if (near && next == near->next_free) {
+        near->next_free = next->next_free;
         chunk->capacity += sizeof(Chunk) + next->capacity;
     }
     
-    // pire scenario : le chunk ne peut pas être redimensionné
+    // Pire scenario : le chunk ne peut pas être redimensionné
     if (chunk->capacity < size) {
         void *new_ptr = malloc_ram(arena, size);
         if (new_ptr) {
@@ -66,16 +71,16 @@ void *realloc_ram(Arena *arena, void *ptr, size_t size)
         return new_ptr;
     }
     
-    // le chunk peut être découpé
+    // Troncage du chunk si possible
     if (chunk->capacity >= size + sizeof(Chunk)) {
-        Chunk *new_free = (Chunk*)(chunk->data + size);
+        new_free = (Chunk*)(chunk->data + size);
         new_free->capacity = chunk->capacity - (sizeof(Chunk) + size);
-        if (!prev || (size_t)prev > (size_t)chunk) {
-            new_free->next_free = prev;
+        if (!near || (size_t)near > (size_t)chunk) {
+            new_free->next_free = near;
             arena->free_chunks = new_free;
         } else {
-            new_free->next_free = prev->next_free;
-            prev->next_free = new_free;
+            new_free->next_free = near->next_free;
+            near->next_free = new_free;
         }
         chunk->capacity = size;
     }
