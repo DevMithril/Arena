@@ -2,8 +2,8 @@
 
 void *malloc_ram(Arena *arena, size_t size)
 {
-    Chunk *chunk = arena->free_chunks;
-    Chunk *prev = chunk;
+    Chunk *prev = (Chunk*)&arena->free_chunks;
+    Chunk *chunk = prev->next_free;
 
     while (chunk && chunk->capacity < size) {
         prev = chunk;
@@ -25,12 +25,7 @@ void *malloc_ram(Arena *arena, size_t size)
         chunk->capacity = size;
     }
     
-    if (prev == chunk) {
-        arena->free_chunks = next;
-    } else {
-        prev->next_free = next;
-    }
-    
+    prev->next_free = next;
     chunk->size = size;
 
     return chunk + 1;

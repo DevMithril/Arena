@@ -41,23 +41,19 @@ void *realloc_ram(Arena *arena, void *ptr, size_t size)
     }
 
     // Déclaration des variables
-    Chunk *near = arena->free_chunks;
+    Chunk *prev = (Chunk*)&arena->free_chunks;
     Chunk *chunk = (Chunk*)ptr - 1;
     Chunk *next = (Chunk*)(chunk->data + chunk->capacity);
     Chunk *new_free;
 
-    // Obtention du Chunk libre précédent si possible, sinon le plus proche
-    while (near && near->next_free && (size_t)chunk > (size_t)near->next_free) {
-        near = near->next_free;
+    // Obtention du Chunk libre précédent
+    while (prev->next_free && (size_t)chunk > (size_t)prev->next_free) {
+        prev = prev->next_free;
     }
     
     // Phagocytation du chunk suivant si il est libre
-    if (next == near) {
-        arena->free_chunks = next->next_free;
-        near = next->next_free;
-        chunk->capacity += sizeof(Chunk) + next->capacity;
-    } else if (near && next == near->next_free) {
-        near->next_free = next->next_free;
+    if (next == prev->next_free) {
+        prev->next_free = next->next_free;
         chunk->capacity += sizeof(Chunk) + next->capacity;
     }
     
@@ -75,13 +71,8 @@ void *realloc_ram(Arena *arena, void *ptr, size_t size)
     if (chunk->capacity >= size + sizeof(Chunk)) {
         new_free = (Chunk*)(chunk->data + size);
         new_free->capacity = chunk->capacity - (sizeof(Chunk) + size);
-        if (!near || (size_t)near > (size_t)chunk) {
-            new_free->next_free = near;
-            arena->free_chunks = new_free;
-        } else {
-            new_free->next_free = near->next_free;
-            near->next_free = new_free;
-        }
+        new_free->next_free = prev->next_free;
+        prev->next_free = new_free;
         chunk->capacity = size;
     }
 

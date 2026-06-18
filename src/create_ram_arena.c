@@ -10,8 +10,9 @@ Arena *create_ram_arena(size_t capacity, void *alloc(size_t))
     
     if (arena) {
         Chunk *chunk = (Chunk*)arena->data;
-        
-        arena->free_chunks = chunk;
+
+        arena->free_chunks.capacity = -1;
+        arena->free_chunks.next_free = chunk;
         chunk->capacity = capacity - sizeof(Chunk);
         chunk->next_free = NULL;
     }

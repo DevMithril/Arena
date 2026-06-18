@@ -13,8 +13,13 @@ typedef struct Chunk {
     byte_t data[];
 } Chunk;
 
+typedef struct First_Chunk {
+    long capacity;
+    Chunk *next_free;
+} First_Chunk;
+
 typedef struct Arena {
-    Chunk *free_chunks;
+    First_Chunk free_chunks;
     byte_t data[];
 } Arena;
 
