@@ -12,15 +12,16 @@
     }                                               \
     exec_time = clock() - start
 
-int main(void)
-{
-    Arena_LIFO *stack = create_lifo_arena(ARENA_SIZE, malloc);
-    Arena *heap = create_ram_arena(ARENA_SIZE, malloc);
-    Arena_FSC *fsc_heap = create_fsc_arena(sizeof(int), DATA_COUNT, malloc);
+int main(void) {
+    Arena_LIFO *stack = init_lifo_arena(malloc(ARENA_SIZE), ARENA_SIZE);
+    Arena *heap = init_ram_arena(malloc(ARENA_SIZE), ARENA_SIZE);
+    Arena_FSC *fsc_heap = init_fsc_arena(malloc(ARENA_SIZE), ARENA_SIZE, sizeof(int));
+
     int *stack_ptr[DATA_COUNT];
     int *heap_ptr[DATA_COUNT];
     int *fsc_heap_ptr[DATA_COUNT];
     int *std_heap_ptr[DATA_COUNT];
+
     time_t exec_time;
     time_t start;
 
