@@ -1,7 +1,6 @@
 #include "types.h"
 
-void *malloc_fsc(Arena_FSC *arena)
-{
+void *malloc_fsc(Arena_FSC *arena) {
     size_t chunk = arena->alloc_ptr;
     size_t elem_size = arena->element_size;
     

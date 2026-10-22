@@ -1,7 +1,6 @@
 #include "types.h"
 
-void *malloc_ram(Arena *arena, size_t size)
-{
+void *malloc_ram(Arena *arena, size_t size) {
     Chunk *prev = (Chunk*)&arena->free_chunks;
     Chunk *chunk = prev->next_free;
 

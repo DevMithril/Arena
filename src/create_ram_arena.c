@@ -1,7 +1,6 @@
 #include "types.h"
 
-Arena *create_ram_arena(size_t capacity, void *alloc(size_t))
-{
+Arena *create_ram_arena(size_t capacity, void *alloc(size_t)) {
     if (capacity < sizeof(Chunk)) {
         return NULL;
     }

@@ -1,7 +1,6 @@
 #include "types.h"
 
-Arena_LIFO *create_lifo_arena(size_t capacity, void *alloc(size_t))
-{
+Arena_LIFO *create_lifo_arena(size_t capacity, void *alloc(size_t)) {
     Arena_LIFO *arena = alloc(capacity + sizeof(Arena_LIFO));
     
     if (arena) {

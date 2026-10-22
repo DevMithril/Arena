@@ -11,8 +11,7 @@ void free_ram(Arena *arena, void *ptr);
  * \param size nombre d'octets à copier
  * \return Adresse mémoire `dst`
  */
-void *memcpy_ram(void *dst, void *src, size_t size)
-{
+void *memcpy_ram(void *dst, void *src, size_t size) {
     size_t* lsrc = src;
     size_t* ldst = dst;
     byte_t* csrc;
@@ -33,8 +32,7 @@ void *memcpy_ram(void *dst, void *src, size_t size)
     return dst;
 }
 
-void *realloc_ram(Arena *arena, void *ptr, size_t size)
-{
+void *realloc_ram(Arena *arena, void *ptr, size_t size) {
     // Allocation standard
     if (!ptr) {
         return malloc_ram(arena, size);

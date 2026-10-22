@@ -4,8 +4,7 @@
  * Combine un chunk avec le chunk suivant si celui-ci est libre
  * \param chunk l'adresse du chunk
  */
-void combine_free_chunks(Chunk *chunk)
-{
+void combine_free_chunks(Chunk *chunk) {
     Chunk *next = (Chunk*)(chunk->data + (long)chunk->capacity);
 
     if (next == chunk->next_free) {
@@ -14,8 +13,7 @@ void combine_free_chunks(Chunk *chunk)
     }
 }
 
-void free_ram(Arena *arena, void *ptr)
-{
+void free_ram(Arena *arena, void *ptr) {
     if (ptr) {
         Chunk *chunk = (Chunk*)ptr - 1;
         Chunk *prev = (Chunk*)&arena->free_chunks;
