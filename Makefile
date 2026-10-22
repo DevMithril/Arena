@@ -4,8 +4,9 @@ SOFLAGS= -shared -fpic
 
 LIBSO= libarena.so
 SRC_DIR= src/
-BIN_DIR= bin/
-DEP_DIR= dep/
+BUID_DIR= build/
+BIN_DIR= $(BUID_DIR)bin/
+DEP_DIR= $(BUID_DIR)dep/
 
 SRC= $(wildcard $(SRC_DIR)*.c)
 OBJ= $(SRC:$(SRC_DIR)%.c=$(BIN_DIR)%.o)
@@ -29,6 +30,6 @@ clean_all: clean
 	@rm -f $(LIBSO)
 
 clean:
-	@rm -f $(BIN_DIR)* $(DEP_DIR)*
+	@rm -rf $(BUID_DIR)
 
 -include $(DEP)
