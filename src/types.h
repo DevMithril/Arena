@@ -13,8 +13,9 @@ typedef struct Chunk {
     byte_t data[];
 } Chunk;
 
+// First_Chunk n'existe que pour empêcher un warning du compilateur
 typedef struct First_Chunk {
-    long capacity;
+    size_t capacity;
     Chunk *next_free;
 } First_Chunk;
 

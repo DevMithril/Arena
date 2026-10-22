@@ -58,6 +58,12 @@ size_t arena_ram_min_size();
  */
 Arena *init_ram_arena(void *memory, size_t size);
 
+/**
+ * Réinitialise une Arena
+ * \param arena arena à réinitialiser
+ */
+void reset_ram_arena(Arena *arena);
+
 /*
 ================================================================================
     Arena LIFO
@@ -98,6 +104,12 @@ size_t arena_lifo_min_size();
  */
 Arena_LIFO *init_lifo_arena(void *memory, size_t size);
 
+/**
+ * Réinitialise une Arena_LIFO
+ * \param arena arena à réinitialiser
+ */
+void reset_lifo_arena(Arena_LIFO *arena);
+
 /*
 ================================================================================
     Arena FSC
@@ -136,5 +148,11 @@ size_t arena_fsc_min_size();
  * \note Renvoie NULL si `size` est inférieur à arena_fsc_min_size()
  */
 Arena_FSC *init_fsc_arena(void *memory, size_t size, size_t element_size);
+
+/**
+ * Réinitialise une Arena_FSC
+ * \param arena arena à réinitialiser
+ */
+void reset_fsc_arena(Arena_FSC *arena);
 
 #endif

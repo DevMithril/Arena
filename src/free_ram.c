@@ -5,7 +5,7 @@
  * \param chunk l'adresse du chunk
  */
 void combine_free_chunks(Chunk *chunk) {
-    Chunk *next = (Chunk*)(chunk->data + (long)chunk->capacity);
+    Chunk *next = (Chunk*)(chunk->data + chunk->capacity);
 
     if (next == chunk->next_free) {
         chunk->next_free = next->next_free;
