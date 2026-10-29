@@ -8,8 +8,8 @@ Arena *init_ram_arena(void *memory, size_t size) {
     Arena *arena = memory;
     Chunk *chunk = (Chunk*)arena->data;
 
-    arena->free_chunks.capacity = size - sizeof(Arena);
-    arena->free_chunks.next_free = chunk;
+    arena->capacity = size - sizeof(Arena);
+    arena->free_chunks = chunk;
     chunk->capacity = size - (sizeof(Chunk) + sizeof(Arena));
     chunk->to.next_free = NULL;
 

@@ -5,22 +5,17 @@
 typedef unsigned char byte_t;
 
 typedef struct Chunk {
-    size_t capacity;
     union {
         struct Chunk *next_free;
         size_t size;
     } to;
+    size_t capacity;
     byte_t data[];
 } Chunk;
 
-// First_Chunk n'existe que pour empêcher un warning du compilateur
-typedef struct First_Chunk {
-    size_t capacity;
-    Chunk *next_free;
-} First_Chunk;
-
 typedef struct Arena {
-    First_Chunk free_chunks;
+    Chunk *free_chunks;
+    size_t capacity;
     byte_t data[];
 } Arena;
 
