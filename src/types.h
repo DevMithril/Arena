@@ -2,6 +2,10 @@
 #define _TYPES_H
 #include <stddef.h>
 
+#define FREE_CHUNK 0x00
+#define USED_CHUNK 0x01
+#define CHAINED_CHUNK 0x03
+
 typedef unsigned char byte_t;
 
 typedef struct Chunk {
@@ -31,10 +35,10 @@ typedef struct Arena_LIFO {
 } Arena_LIFO;
 
 typedef struct Arena_FSC {
-    size_t end_of_arena;
     size_t element_size;
     size_t alloc_ptr;
-    byte_t data[];
+    size_t data_ptr;
+    byte_t metadata[];
 } Arena_FSC;
 
 #endif

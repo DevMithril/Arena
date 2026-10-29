@@ -30,7 +30,7 @@ int main(void) {
     test(stack_ptr[i] = malloc_lifo(stack, sizeof(int)));
     printf("malloc_lifo()\t%ld\n", exec_time);
 
-    test(fsc_heap_ptr[i] = malloc_fsc(fsc_heap));
+    test(fsc_heap_ptr[i] = malloc_fsc(fsc_heap, sizeof(int)));
     printf("malloc_fsc()\t%ld\n", exec_time);
 
     test(heap_ptr[i] = malloc_ram(heap, sizeof(int)));
