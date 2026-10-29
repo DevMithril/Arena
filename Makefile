@@ -1,5 +1,5 @@
 CC= gcc
-CFLAGS= -Wall -Wextra -pedantic
+CFLAGS= -Wall -Wextra -pedantic -std=c99
 SOFLAGS= -shared -fpic
 
 LIBSO= libarena.so

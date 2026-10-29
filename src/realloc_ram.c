@@ -45,13 +45,13 @@ void *realloc_ram(Arena *arena, void *ptr, size_t size) {
     Chunk *new_free;
 
     // Obtention du Chunk libre précédent
-    while (prev->next_free && (size_t)chunk > (size_t)prev->next_free) {
-        prev = prev->next_free;
+    while (prev->to.next_free && (size_t)chunk > (size_t)prev->to.next_free) {
+        prev = prev->to.next_free;
     }
     
     // Phagocytation du chunk suivant si il est libre
-    if (next == prev->next_free) {
-        prev->next_free = next->next_free;
+    if (next == prev->to.next_free) {
+        prev->to.next_free = next->to.next_free;
         chunk->capacity += sizeof(Chunk) + next->capacity;
     }
     
@@ -69,11 +69,11 @@ void *realloc_ram(Arena *arena, void *ptr, size_t size) {
     if (chunk->capacity >= size + sizeof(Chunk)) {
         new_free = (Chunk*)(chunk->data + size);
         new_free->capacity = chunk->capacity - (sizeof(Chunk) + size);
-        new_free->next_free = prev->next_free;
-        prev->next_free = new_free;
+        new_free->to.next_free = prev->to.next_free;
+        prev->to.next_free = new_free;
         chunk->capacity = size;
     }
 
-    chunk->size = size;
+    chunk->to.size = size;
     return ptr;
 }

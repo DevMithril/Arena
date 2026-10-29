@@ -7,8 +7,8 @@
 void combine_free_chunks(Chunk *chunk) {
     Chunk *next = (Chunk*)(chunk->data + chunk->capacity);
 
-    if (next == chunk->next_free) {
-        chunk->next_free = next->next_free;
+    if (next == chunk->to.next_free) {
+        chunk->to.next_free = next->to.next_free;
         chunk->capacity += sizeof(Chunk) + next->capacity;
     }
 }
@@ -18,12 +18,12 @@ void free_ram(Arena *arena, void *ptr) {
         Chunk *chunk = (Chunk*)ptr - 1;
         Chunk *prev = (Chunk*)&arena->free_chunks;
         
-        while (prev->next_free && (size_t)chunk > (size_t)prev->next_free) {
-            prev = prev->next_free;
+        while (prev->to.next_free && (size_t)chunk > (size_t)prev->to.next_free) {
+            prev = prev->to.next_free;
         }
 
-        chunk->next_free = prev->next_free;
-        prev->next_free = chunk;
+        chunk->to.next_free = prev->to.next_free;
+        prev->to.next_free = chunk;
         combine_free_chunks(chunk);
         combine_free_chunks(prev);
     }

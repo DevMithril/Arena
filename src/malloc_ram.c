@@ -2,11 +2,11 @@
 
 void *malloc_ram(Arena *arena, size_t size) {
     Chunk *prev = (Chunk*)&arena->free_chunks;
-    Chunk *chunk = prev->next_free;
+    Chunk *chunk = prev->to.next_free;
 
     while (chunk && chunk->capacity < size) {
         prev = chunk;
-        chunk = chunk->next_free;
+        chunk = chunk->to.next_free;
     }
     
     if (!chunk) {
@@ -16,16 +16,16 @@ void *malloc_ram(Arena *arena, size_t size) {
     Chunk *next;
 
     if (chunk->capacity < size + sizeof(Chunk)) {
-        next = chunk->next_free;
+        next = chunk->to.next_free;
     } else {
         next = (Chunk*)(chunk->data + size);
-        next->next_free = chunk->next_free;
+        next->to.next_free = chunk->to.next_free;
         next->capacity = chunk->capacity - (sizeof(Chunk) + size);
         chunk->capacity = size;
     }
     
-    prev->next_free = next;
-    chunk->size = size;
+    prev->to.next_free = next;
+    chunk->to.size = size;
 
     return chunk + 1;
 }

@@ -9,7 +9,7 @@ typedef struct Chunk {
     union {
         struct Chunk *next_free;
         size_t size;
-    };
+    } to;
     byte_t data[];
 } Chunk;
 
