@@ -15,7 +15,7 @@ DEP= $(SRC:$(SRC_DIR)%.c=$(DEP_DIR)%.d)
 lib: $(LIBSO)
 
 $(LIBSO): $(OBJ)
-	$(CC) -o $@ $^ $(CFLAGS) $(SOFLAGS)
+	$(CC) $(CFLAGS) $(SOFLAGS) -o $@ $^
 
 $(BIN_DIR)%.o: $(SRC_DIR)%.c $(BIN_DIR)
 	@$(CC) $(CFLAGS) -o $@ -c $<
