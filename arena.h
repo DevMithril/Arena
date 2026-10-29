@@ -124,10 +124,9 @@ typedef void Arena_FSC;
 /**
  * Alloue un bloc mémoire dans `arena`
  * \param arena arena où le bloc mémoire sera alloué
- * \param size nombre d'octets à allouer
  * \note Renvoie NULL en cas d'échec
  */
-void *malloc_fsc(Arena_FSC *arena, size_t size);
+void *malloc_fsc(Arena_FSC *arena);
 
 /**
  * Libère un bloc mémoire précédemment alloué dans `arena`
